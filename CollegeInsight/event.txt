@@ -1,0 +1,12 @@
+CREATE EVENT cleaning_teacher ON SCHEDULE EVERY 1 MINUTE ENABLE
+  DO
+    DELETE FROM teacher WHERE verified='0' AND datetime < (NOW() - INTERVAL 600 second);
+
+  SET GLOBAL event_scheduler = ON;
+
+  DROP EVENT IF EXISTS test.target_ultra_sync ;
+CREATE EVENT test.target_ultra_sync
+ON SCHEDULE EVERY 30 SECOND
+DO
+DROP  TABLE IF EXISTS `test`.`ultra`;
+CREATE  TABLE `test`.`ultra` AS SELECT * FROM `target_ultra`;
